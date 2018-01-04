@@ -9,9 +9,9 @@ import (
 )
 
 type Action interface {
-	GetName() string
-	GetDescription() string
-	Execute()
+	getName() string
+	getDescription() string
+	execute()
 }
 
 /* Actions */
@@ -30,15 +30,15 @@ type ActionImpl struct {
 	exec        func()
 }
 
-func (a *ActionImpl) GetDescription() string {
+func (a *ActionImpl) getDescription() string {
 	return a.description
 }
 
-func (a *ActionImpl) GetName() string {
+func (a *ActionImpl) getName() string {
 	return a.name
 }
 
-func (a *ActionImpl) Execute() {
+func (a *ActionImpl) execute() {
 	if a.exec != nil {
 		a.exec()
 	}
@@ -60,7 +60,7 @@ type ChoiceImpl struct {
 }
 
 func (c *ChoiceImpl) AddAction(a Action) error {
-	if c.getActionByName(a.GetName()) == nil {
+	if c.getActionByName(a.getName()) == nil {
 		c.actions = append(c.actions, a)
 		return nil
 	}
@@ -69,7 +69,7 @@ func (c *ChoiceImpl) AddAction(a Action) error {
 
 func (c *ChoiceImpl) displayActions() {
 	for _, a := range c.actions {
-		fmt.Printf("%s: %s\n", a.GetName(), a.GetDescription())
+		fmt.Printf("%s: %s\n", a.getName(), a.getDescription())
 	}
 }
 
@@ -90,7 +90,7 @@ func (c *ChoiceImpl) AskUser() Action {
 
 func (c *ChoiceImpl) getActionByName(name string) Action {
 	for _, a := range c.actions {
-		if a.GetName() == name {
+		if a.getName() == name {
 			return a
 		}
 	}

@@ -10,7 +10,7 @@ func Test_Action_Execute_executes_the_given_function(t *testing.T) {
 	f := func() { test = "After Test" }
 	a := NewAction("test", "this is a test", f)
 
-	a.Execute()
+	a.execute()
 	actual := test
 	expected := "After Test"
 	if actual != expected {
