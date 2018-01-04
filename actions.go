@@ -48,7 +48,7 @@ func (a *ActionImpl) execute() {
 
 type Choice interface {
 	AddAction(action Action) error
-	AskUser() Action
+	AskUser()
 }
 
 func NewChoice() Choice {
@@ -78,14 +78,15 @@ func (c *ChoiceImpl) choiceIsValid(choice string) bool {
 	return a != nil
 }
 
-func (c *ChoiceImpl) AskUser() Action {
+func (c *ChoiceImpl) AskUser() {
 	choice := ""
 	for !c.choiceIsValid(choice) {
 		fmt.Println("Your options:")
 		c.displayActions()
 		choice = c.GetUsersChoice()
 	}
-	return c.getActionByName(choice)
+	a := c.getActionByName(choice)
+	a.execute()
 }
 
 func (c *ChoiceImpl) getActionByName(name string) Action {
