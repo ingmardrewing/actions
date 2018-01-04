@@ -16,7 +16,7 @@ type Action interface {
 
 /* Actions */
 
-func NewAction(name, description string, exec func()) Action {
+func newAction(name, description string, exec func()) Action {
 	a := new(ActionImpl)
 	a.name = name
 	a.description = description
@@ -47,7 +47,7 @@ func (a *ActionImpl) execute() {
 /* Choice */
 
 type Choice interface {
-	AddAction(action Action) error
+	AddAction(name, description string, callback func()) error
 	AskUser()
 }
 
@@ -59,8 +59,9 @@ type ChoiceImpl struct {
 	actions []Action
 }
 
-func (c *ChoiceImpl) AddAction(a Action) error {
-	if c.getActionByName(a.getName()) == nil {
+func (c *ChoiceImpl) AddAction(name, description string, callback func()) error {
+	if c.getActionByName(name) == nil {
+		a := newAction(name, description, callback)
 		c.actions = append(c.actions, a)
 		return nil
 	}
