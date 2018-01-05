@@ -107,7 +107,7 @@ func (c *ChoiceImpl) AskUser() {
 		fmt.Println("----- Available options:")
 		c.displayActions()
 		fmt.Println("----- Your choice:")
-		choice = c.GetUsersChoice()
+		choice = c.getUsersChoice()
 	}
 	a := c.getActionByName(choice)
 	a.execute()
@@ -122,7 +122,7 @@ func (c *ChoiceImpl) getActionByName(name string) action {
 	return nil
 }
 
-func (c *ChoiceImpl) GetUsersChoice() string {
+func (c *ChoiceImpl) getUsersChoice() string {
 	reader := bufio.NewReader(os.Stdin)
 	text, _ := reader.ReadString('\n')
 	return strings.TrimSuffix(text, "\n")
