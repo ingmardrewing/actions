@@ -46,21 +46,25 @@ func (a *ActionImpl) execute() {
 	}
 }
 
-/* Choice */
+// Create a new Choice
+func NewChoice() Choice {
+	return new(ChoiceImpl)
+}
 
+// Choice interface
 type Choice interface {
 	AddAction(name, description string, callback func()) error
 	AskUser()
 }
 
-func NewChoice() Choice {
-	return new(ChoiceImpl)
-}
-
+// Implementation of the Choice interface, holding a splice of actions
 type ChoiceImpl struct {
 	actions []action
 }
 
+// AddAction allows to add an action choosable for the user of the
+// cli application using this package. The name should be short, for it
+// must be typed by the user.
 func (c *ChoiceImpl) AddAction(name, description string, callback func()) error {
 	if c.getActionByName(name) == nil {
 		a := newAction(name, description, callback)
@@ -93,6 +97,10 @@ func (c *ChoiceImpl) choiceIsValid(choice string) bool {
 	return a != nil
 }
 
+// Prompting the user with the available actions.
+// If put in a conditionless for loop this leads to
+// a cli application displaying the actions again
+// after any successful execution of an action.
 func (c *ChoiceImpl) AskUser() {
 	choice := ""
 	for !c.choiceIsValid(choice) {
