@@ -64,3 +64,17 @@ func Test_choiceIsValid_returns_true_when_an_action_with_the_name_matching_the_c
 		t.Error("Expected", expected, "but got", actual)
 	}
 }
+
+func Test_findLongesActionName_actually_returns_the_length_of_the_longest_action_name(t *testing.T) {
+	c := NewChoice()
+	c.AddAction("test", "desc", func() {})
+	c.AddAction("testing", "desc", func() {})
+	c.AddAction("t", "desc", func() {})
+
+	actual := c.(*ChoiceImpl).findLongestActionName()
+	expected := "7"
+
+	if actual != expected {
+		t.Error("Expected", expected, "but got", actual)
+	}
+}

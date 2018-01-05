@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -69,9 +70,21 @@ func (c *ChoiceImpl) AddAction(name, description string, callback func()) error 
 }
 
 func (c *ChoiceImpl) displayActions() {
+	l := c.findLongestActionName()
+	tmpl := "%-" + l + "s: %s\n"
 	for _, a := range c.actions {
-		fmt.Printf("%s: %s\n", a.getName(), a.getDescription())
+		fmt.Printf(tmpl, a.getName(), a.getDescription())
 	}
+}
+
+func (c *ChoiceImpl) findLongestActionName() string {
+	l := 0
+	for _, a := range c.actions {
+		if len(a.getName()) > l {
+			l = len(a.getName())
+		}
+	}
+	return strconv.Itoa(l)
 }
 
 func (c *ChoiceImpl) choiceIsValid(choice string) bool {
@@ -82,8 +95,9 @@ func (c *ChoiceImpl) choiceIsValid(choice string) bool {
 func (c *ChoiceImpl) AskUser() {
 	choice := ""
 	for !c.choiceIsValid(choice) {
-		fmt.Println("Your options:")
+		fmt.Println("----- Available options:")
 		c.displayActions()
+		fmt.Println("----- Your choice:")
 		choice = c.GetUsersChoice()
 	}
 	a := c.getActionByName(choice)
