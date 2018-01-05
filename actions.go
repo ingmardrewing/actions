@@ -1,3 +1,4 @@
+// Simple tool for interactive shell sessions
 package actions
 
 import (
@@ -9,7 +10,7 @@ import (
 	"strings"
 )
 
-type Action interface {
+type action interface {
 	getName() string
 	getDescription() string
 	execute()
@@ -17,7 +18,7 @@ type Action interface {
 
 /* Actions */
 
-func newAction(name, description string, exec func()) Action {
+func newAction(name, description string, exec func()) action {
 	a := new(ActionImpl)
 	a.name = name
 	a.description = description
@@ -57,7 +58,7 @@ func NewChoice() Choice {
 }
 
 type ChoiceImpl struct {
-	actions []Action
+	actions []action
 }
 
 func (c *ChoiceImpl) AddAction(name, description string, callback func()) error {
@@ -104,7 +105,7 @@ func (c *ChoiceImpl) AskUser() {
 	a.execute()
 }
 
-func (c *ChoiceImpl) getActionByName(name string) Action {
+func (c *ChoiceImpl) getActionByName(name string) action {
 	for _, a := range c.actions {
 		if a.getName() == name {
 			return a
