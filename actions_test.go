@@ -10,7 +10,7 @@ func Test_Action_Execute_executes_the_given_function(t *testing.T) {
 	f := func() { test = "After Test" }
 	c := NewChoice()
 	c.AddAction("test", "this is a test", f)
-	c.(*ChoiceImpl).actions[0].execute()
+	c.(*ChoiceImpl).Actions[0].execute()
 
 	actual := test
 	expected := "After Test"

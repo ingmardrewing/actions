@@ -10,15 +10,15 @@ import (
 	"strings"
 )
 
-type action interface {
-	getName() string
-	getDescription() string
+type Action interface {
+	GetName() string
+	GetDescription() string
+	GetFunction() func()
 	execute()
 }
 
-/* Actions */
-
-func newAction(name, description string, exec func()) action {
+// Actions
+func newAction(name, description string, exec func()) Action {
 	a := new(ActionImpl)
 	a.name = name
 	a.description = description
@@ -32,12 +32,16 @@ type ActionImpl struct {
 	exec        func()
 }
 
-func (a *ActionImpl) getDescription() string {
+func (a *ActionImpl) GetDescription() string {
 	return a.description
 }
 
-func (a *ActionImpl) getName() string {
+func (a *ActionImpl) GetName() string {
 	return a.name
+}
+
+func (a *ActionImpl) GetFunction() func() {
+	return a.exec
 }
 
 func (a *ActionImpl) execute() {
@@ -55,11 +59,16 @@ func NewChoice() Choice {
 type Choice interface {
 	AddAction(name, description string, callback func()) error
 	AskUser()
+	Actions() []Action
 }
 
 // Implementation of the Choice interface, holding a splice of actions
 type ChoiceImpl struct {
-	actions []action
+	actions []Action
+}
+
+func (c *ChoiceImpl) Actions() []Action {
+	return c.actions
 }
 
 // AddAction allows to add an action choosable for the user of the
@@ -78,15 +87,15 @@ func (c *ChoiceImpl) displayActions() {
 	l := c.findLongestActionName()
 	tmpl := "%-" + l + "s: %s\n"
 	for _, a := range c.actions {
-		fmt.Printf(tmpl, a.getName(), a.getDescription())
+		fmt.Printf(tmpl, a.GetName(), a.GetDescription())
 	}
 }
 
 func (c *ChoiceImpl) findLongestActionName() string {
 	l := 0
 	for _, a := range c.actions {
-		if len(a.getName()) > l {
-			l = len(a.getName())
+		if len(a.GetName()) > l {
+			l = len(a.GetName())
 		}
 	}
 	return strconv.Itoa(l)
@@ -113,9 +122,9 @@ func (c *ChoiceImpl) AskUser() {
 	a.execute()
 }
 
-func (c *ChoiceImpl) getActionByName(name string) action {
+func (c *ChoiceImpl) getActionByName(name string) Action {
 	for _, a := range c.actions {
-		if a.getName() == name {
+		if a.GetName() == name {
 			return a
 		}
 	}
